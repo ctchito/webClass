@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Fundamentals — COLTECH UBa</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-vsc-dark-plus.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+  <style>
+    /* ── Reset ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #1e1e1e;
+      --panel:     #252526;
+      --sidebar:   #2c2c2d;
+      --border:    #3c3c3c;
+      --accent:    #007acc;
+      --teal:      #4ec9b0;
+      --yellow:    #dcdcaa;
+      --purple:    #c586c0;
+      --orange:    #ce9178;
+      --green:     #6a9955;
+      --text:      #d4d4d4;
+      --muted:     #858585;
+      --light:     #9cdcfe;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    /* ── Top bar ─────────────────────────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #323233;
+      border-bottom: 2px solid var(--accent);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      letter-spacing: .05em;
+    }
+
+    .topbar h1 {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #cccccc;
+    }
+
+    .topbar-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .topbar-right strong { color: #ccc; }
+
+    /* ── Layout ──────────────────────────────────────────────── */
+    .shell {
+      display: flex;
+      min-height: calc(100vh - 44px);
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────────── */
+    nav {
+      width: 230px;
+      flex-shrink: 0;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 44px;
+      height: calc(100vh - 44px);
+      overflow-y: auto;
+      padding: 12px 0 24px;
+    }
+
+    nav::-webkit-scrollbar { width: 4px; }
+    nav::-webkit-scrollbar-track { background: transparent; }
+    nav::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+
+    .nav-group { margin-bottom: 2px; }
+
+    .nav-label {
+      display: block;
+      font-size: 0.69rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--green);
+      padding: 12px 16px 3px;
+      font-weight: 600;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 16px 4px 26px;
+      color: #bbbbbb;
+      text-decoration: none;
+      font-size: 0.81rem;
+      border-left: 2px solid transparent;
+      transition: all .12s;
+    }
+
+    nav a:hover {
+      background: #37373d;
+      border-left-color: var(--accent);
+      color: #fff;
+    }
+
+    nav a .num {
+      font-size: 0.68rem;
+      color: var(--muted);
+      min-width: 16px;
+    }
+
+    /* ── Main ────────────────────────────────────────────────── */
+    main {
+      flex: 1;
+      padding: 36px 44px 60px;
+      max-width: 900px;
+      overflow-x: hidden;
+    }
+
+    /* ── Cover block ─────────────────────────────────────────── */
+    .cover {
+      background: linear-gradient(135deg, #0d47a1 0%, #1565c0 40%, #0277bd 100%);
+      border-radius: 10px;
+      padding: 36px 40px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::after {
+      content: 'JS';
+      position: absolute;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 120px;
+      font-weight: 900;
+      color: rgba(255,255,255,.07);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .cover h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.01em;
+      margin-bottom: 6px;
+    }
+
+    .cover .subtitle {
+      color: #90caf9;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-chip {
+      background: rgba(255,255,255,.13);
+      color: #e3f2fd;
+      border: 1px solid rgba(255,255,255,.2);
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── Section ─────────────────────────────────────────────── */
+    .section {
+      margin-bottom: 56px;
+      scroll-margin-top: 56px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--light);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 9px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-number {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .subsection {
+      margin-bottom: 38px;
+    }
+
+    .subsection-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--teal);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .desc {
+      font-size: 0.83rem;
+      color: #9d9d9d;
+      margin-bottom: 10px;
+      line-height: 1.65;
+    }
+
+    .desc code {
+      background: #2d2d2d;
+      color: var(--orange);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.82rem;
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    }
+
+    /* ── VS Code window ──────────────────────────────────────── */
+    .code-window {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .code-titlebar {
+      background: #2d2d2d;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot.r { background: #ff5f57; }
+    .dot.a { background: #febc2e; }
+    .dot.g { background: #28c840; }
+
+    .file-tab {
+      margin-left: 8px;
+      background: var(--bg);
+      color: #ccc;
+      font-size: 0.73rem;
+      padding: 2px 12px;
+      border-radius: 4px 4px 0 0;
+      border-top: 1px solid var(--accent);
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    }
+
+    .code-window pre[class*="language-"] {
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: var(--bg) !important;
+      font-size: 13px !important;
+      line-height: 1.7 !important;
+      padding: 18px 22px !important;
+      overflow-x: auto;
+    }
+
+    /* ── Output ──────────────────────────────────────────────── */
+    .output {
+      background: #0f0f0f;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 10px 20px 12px;
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      font-size: 12px;
+      color: #89d185;
+      line-height: 1.7;
+    }
+
+    .output::before {
+      content: '▷  Console Output';
+      display: block;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-family: 'Segoe UI', sans-serif;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .out-comment { color: #5a7a5a; }
+    .out-err     { color: #f48771; }
+    .out-warn    { color: #cca700; }
+
+    /* ── Info box ────────────────────────────────────────────── */
+    .info-box {
+      background: #1a2a3a;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 11px 16px;
+      margin: 8px 0 14px;
+      font-size: 0.82rem;
+      color: #9bc8e8;
+      line-height: 1.6;
+    }
+
+    .info-box strong { color: #90caf9; }
+
+    .warn-box {
+      background: #2a2000;
+      border-left: 3px solid #cca700;
+      border-radius: 0 6px 6px 0;
+      padding: 11px 16px;
+      margin: 8px 0 14px;
+      font-size: 0.82rem;
+      color: #d4b44a;
+    }
+
+    .warn-box strong { color: #e0c040; }
+
+    /* ── Table ───────────────────────────────────────────────── */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.81rem;
+      margin: 12px 0 18px;
+    }
+
+    .ref-table th {
+      background: #2a2a2a;
+      color: var(--light);
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .ref-table td {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .ref-table tr:nth-child(even) td { background: #232323; }
+    .ref-table td code {
+      background: #2d2d2d;
+      color: var(--orange);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.79rem;
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    }
+
+    /* ── Badge ───────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-weight: 700;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .badge.es6  { background: var(--purple); color: #fff; }
+    .badge.tip  { background: #2e7d32; color: #a5d6a7; }
+    .badge.warn { background: #7d4e00; color: #ffcc80; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      background: #181818;
+      border-top: 1px solid var(--border);
+      padding: 22px 44px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer strong { color: #aaa; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 750px) {
+      nav { display: none; }
+      main { padding: 24px 18px 48px; }
+      .cover h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Top bar ───────────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">JS</span>
+    <h1>JavaScript Fundamentals — Complete Reference</h1>
+  </div>
+  <div class="topbar-right">
+    <strong>TCHAPGA TCHITO C.</strong><br>
+    University of Buea · COLTECH · 2025/2026
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- ── Sidebar ───────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-group">
+    <span class="nav-label">Getting Started</span>
+    <a href="#intro"><span class="num">01</span> Introduction</a>
+    <a href="#statements"><span class="num">02</span> Statements</a>
+    <a href="#comments"><span class="num">03</span> Comments</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Data</span>
+    <a href="#variables"><span class="num">04</span> Variables</a>
+    <a href="#datatypes"><span class="num">05</span> Data Types</a>
+    <a href="#operators"><span class="num">06</span> Operators</a>
+    <a href="#typeconversion"><span class="num">07</span> Type Conversion</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Control Flow</span>
+    <a href="#conditionals"><span class="num">08</span> Conditionals</a>
+    <a href="#switch"><span class="num">09</span> Switch</a>
+    <a href="#loops"><span class="num">10</span> Loops</a>
+    <a href="#break-continue"><span class="num">11</span> break / continue</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Functions</span>
+    <a href="#functions"><span class="num">12</span> Functions</a>
+    <a href="#scope"><span class="num">13</span> Scope &amp; Hoisting</a>
+    <a href="#closures"><span class="num">14</span> Closures</a>
+    <a href="#higher-order"><span class="num">15</span> Higher-Order</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Timing</span>
+    <a href="#timers"><span class="num">16</span> setTimeout</a>
+    <a href="#intervals"><span class="num">17</span> setInterval</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Arrays</span>
+    <a href="#arrays"><span class="num">18</span> Arrays Basics</a>
+    <a href="#array-methods"><span class="num">19</span> Array Methods</a>
+    <a href="#array-hof"><span class="num">20</span> map/filter/reduce</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">Objects</span>
+    <a href="#objects"><span class="num">21</span> Objects</a>
+    <a href="#strings"><span class="num">22</span> String Methods</a>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">ES6+</span>
+    <a href="#destructuring"><span class="num">23</span> Destructuring</a>
+    <a href="#spread"><span class="num">24</span> Spread &amp; Rest</a>
+    <a href="#template"><span class="num">25</span> Template Literals</a>
+    <a href="#classes"><span class="num">26</span> Classes</a>
+    <a href="#promises"><span class="num">27</span> Promises / Async</a>
+  </div>
+</nav>
+
+<!-- ── Main ──────────────────────────────────────────────────── -->
+<main>
+
+  <!-- Cover -->
+  <div class="cover">
+    <h2>JavaScript Fundamentals</h2>
+    <p class="subtitle">From statements &amp; variables to ES6+ — a complete programming guide</p>
+    <div class="cover-meta">
+      <span class="meta-chip">👨‍💻 TCHAPGA TCHITO C.</span>
+      <span class="meta-chip">🎓 University of Buea</span>
+      <span class="meta-chip">🏛️ College of Technology</span>
+      <span class="meta-chip">📅 2025 / 2026</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       01 — INTRODUCTION
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="intro">
+    <div class="section-title">
+      <span class="section-number">01</span>
+      Introduction to JavaScript
+    </div>
+
+    <p class="desc">
+      JavaScript (JS) is a lightweight, interpreted, single-threaded programming language
+      that runs in browsers and on servers (Node.js). It is the <em>only</em> language
+      natively understood by web browsers, making it the backbone of interactive web pages.
+    </p>
+
+    <table class="ref-table">
+      <thead><tr><th>Feature</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Created by</td><td>Brendan Eich (Netscape, 1995) — in 10 days</td></tr>
+        <tr><td>Standard</td><td>ECMAScript (ECMA-262) — ES6 (2015) was a major milestone</td></tr>
+        <tr><td>Paradigm</td><td>Multi-paradigm: imperative, OOP, functional</td></tr>
+        <tr><td>Typing</td><td>Dynamically typed, weakly typed</td></tr>
+        <tr><td>Execution</td><td>Browser engine (V8, SpiderMonkey) or Node.js</td></tr>
+        <tr><td>File extension</td><td><code>.js</code> — linked with <code>&lt;script src="app.js"&gt;</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="subsection">
+      <div class="subsection-title">Running JavaScript — three ways</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">hello.js</div></div>
+        <pre><code class="language-javascript">// 1. Inline inside HTML
+// &lt;script&gt; alert("Hello!"); &lt;/script&gt;
+
+// 2. External file linked in HTML
+// &lt;script src="hello.js"&gt;&lt;/script&gt;
+
+// 3. Node.js terminal
+// $ node hello.js
+
+// The simplest program
+console.log("Hello, World!");    // prints to console
+alert("Hello from browser!");    // popup (browser only)
+document.write("Hello DOM");     // writes into the page</code></pre>
+      </div>
+      <div class="output">Hello, World!</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       02 — STATEMENTS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="statements">
+    <div class="section-title">
+      <span class="section-number">02</span>
+      Statements &amp; Syntax Rules
+    </div>
+
+    <p class="desc">
+      A <strong>statement</strong> is a complete instruction. JavaScript programs are
+      sequences of statements. Each statement ends with a semicolon <code>;</code>
+      (optional due to ASI — Automatic Semicolon Insertion, but best practice to include).
+    </p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">statements.js</div></div>
+      <pre><code class="language-javascript">// ── Types of statements ───────────────────────────────────────
+
+// 1. Expression statement
+3 + 4;                          // evaluated but result discarded
+console.log("expression");     // function call — most common
+
+// 2. Declaration statement
+let name = "Alice";             // variable declaration
+function greet() {}             // function declaration
+
+// 3. Control flow statement
+if (true) { console.log("yes"); }   // conditional
+for (let i = 0; i < 3; i++) {}      // loop
+
+// 4. Block statement — groups statements with { }
+{
+  let x = 10;
+  let y = 20;
+  console.log(x + y);   // 30
+}
+
+// ── Semicolons & whitespace ──────────────────────────────────
+let a = 1; let b = 2; let c = a + b;   // multiple on one line (avoid)
+
+// Better: one statement per line
+let x = 10;
+let y = 20;
+let sum = x + y;
+console.log(sum);   // 30
+
+// JavaScript is case-sensitive
+let Score = 100;
+let score = 200;
+console.log(Score, score);   // 100  200  — different variables</code></pre>
+    </div>
+    <div class="output">expression<br>30<br>30<br>100  200</div>
+
+    <div class="info-box">
+      <strong>Best practice:</strong> Always end statements with <code>;</code>, use consistent
+      indentation (2 or 4 spaces), and keep one statement per line.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       03 — COMMENTS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="comments">
+    <div class="section-title">
+      <span class="section-number">03</span>
+      Comments
+    </div>
+
+    <p class="desc">Comments are ignored by the JavaScript engine. Use them to explain <em>why</em>, not <em>what</em>.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">comments.js</div></div>
+      <pre><code class="language-javascript">// Single-line comment — everything after // is ignored
+
+/* Multi-line comment
+   spans multiple lines.
+   Useful for documentation blocks.
+*/
+
+/**
+ * JSDoc comment — used by IDEs for type hints and docs
+ * @param {string} name  - The user's name
+ * @param {number} age   - The user's age
+ * @returns {string}     - A greeting string
+ */
+function greet(name, age) {
+  return `Hello ${name}, you are ${age} years old.`;
+}
+
+// Temporarily disable code
+// console.log("This line is disabled");
+console.log("This line runs");
+
+// Inline comment
+let speed = 60;   // km/h — city limit</code></pre>
+    </div>
+    <div class="output">This line runs</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       04 — VARIABLES
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="variables">
+    <div class="section-title">
+      <span class="section-number">04</span>
+      Variables — var, let, const
+    </div>
+
+    <p class="desc">
+      Variables are named containers for storing data values. JavaScript has
+      three keywords for declaring them: <code>var</code>, <code>let</code>, and <code>const</code>.
+    </p>
+
+    <div class="subsection">
+      <div class="subsection-title">var — function-scoped (legacy)</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">var.js</div></div>
+        <pre><code class="language-javascript">var city = "Buea";
+console.log(city);   // "Buea"
+
+var city = "Douala"; // re-declaration allowed (bad practice)
+console.log(city);   // "Douala"
+
+city = "Yaounde";    // reassignment allowed
+console.log(city);   // "Yaounde"
+
+// var is function-scoped, NOT block-scoped
+function test() {
+  var x = 5;
+  if (true) {
+    var x = 10;   // SAME variable — overwrites outer x
+    console.log(x); // 10
+  }
+  console.log(x); // 10  ← leaks out of the if block!
+}
+test();</code></pre>
+      </div>
+      <div class="output">"Buea"<br>"Douala"<br>"Yaounde"<br>10<br>10</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">let — block-scoped (preferred for mutable variables)</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">let.js</div></div>
+        <pre><code class="language-javascript">let score = 0;
+console.log(score);   // 0
+
+score = 100;          // reassignment ✅
+console.log(score);   // 100
+
+// let score = 200;   // ❌ SyntaxError: cannot re-declare
+
+// let is block-scoped
+function test() {
+  let y = 5;
+  if (true) {
+    let y = 10;         // NEW variable inside this block
+    console.log(y);     // 10
+  }
+  console.log(y);       // 5  ← outer y unchanged
+}
+test();
+
+// let without initial value
+let username;
+console.log(username);  // undefined
+username = "Alice";
+console.log(username);  // "Alice"</code></pre>
+      </div>
+      <div class="output">0<br>100<br>10<br>5<br>undefined<br>"Alice"</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">const — block-scoped, immutable binding (preferred for constants)</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">const.js</div></div>
+        <pre><code class="language-javascript">const PI = 3.14159;
+console.log(PI);   // 3.14159
+
+// PI = 3;         // ❌ TypeError: Assignment to constant variable
+
+// IMPORTANT: const prevents re-binding, NOT mutation
+const user = { name: "Alice", age: 30 };
+user.age = 31;       // ✅ Mutating the object IS allowed
+console.log(user);   // { name: "Alice", age: 31 }
+
+// user = {};       // ❌ Cannot reassign the reference
+
+const colors = ["red", "green"];
+colors.push("blue"); // ✅ Mutating the array IS allowed
+console.log(colors); // ["red", "green", "blue"]
+
+// ── When to use which ────────────────────────────────────────
+const MAX_SPEED = 120;    // never changes → const
+let   currentSpeed = 0;  // changes over time → let
+// avoid var in modern JS</code></pre>
+      </div>
+      <div class="output">3.14159<br>{ name: "Alice", age: 31 }<br>["red", "green", "blue"]</div>
+    </div>
+
+    <table class="ref-table">
+      <thead><tr><th>Keyword</th><th>Scope</th><th>Re-declare</th><th>Reassign</th><th>Hoisted</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td><code>var</code></td><td>Function</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ (as undefined)</td><td>Avoid in modern JS</td></tr>
+        <tr><td><code>let</code></td><td>Block</td><td>❌ No</td><td>✅ Yes</td><td>❌ (TDZ error)</td><td>Values that change</td></tr>
+        <tr><td><code>const</code></td><td>Block</td><td>❌ No</td><td>❌ No</td><td>❌ (TDZ error)</td><td>Everything else (default)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       05 — DATA TYPES
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="datatypes">
+    <div class="section-title">
+      <span class="section-number">05</span>
+      Data Types
+    </div>
+
+    <p class="desc">JavaScript has <strong>8 data types</strong>: 7 primitives and 1 non-primitive (Object).</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">types.js</div></div>
+      <pre><code class="language-javascript">// ── Primitive types (immutable, stored by value) ──────────────
+
+// 1. Number — integer and float (64-bit IEEE 754)
+let age     = 25;
+let price   = 9.99;
+let neg     = -42;
+let big     = 1_000_000;       // underscores for readability
+let hex     = 0xFF;            // 255 in hexadecimal
+let inf     = Infinity;
+let nan     = NaN;             // Not a Number
+
+// 2. String — text, single / double / backtick quotes
+let single   = 'Hello';
+let double   = "World";
+let template = `Hi ${single}`; // template literal (ES6)
+
+// 3. Boolean — only true or false
+let isOnline  = true;
+let hasErrors = false;
+
+// 4. undefined — declared but not assigned
+let x;
+console.log(x);              // undefined
+
+// 5. null — intentional absence of value
+let user = null;
+
+// 6. BigInt — integers beyond Number.MAX_SAFE_INTEGER
+let huge = 9007199254740993n; // append 'n'
+
+// 7. Symbol — unique identifier
+const id = Symbol("id");
+
+// ── Object type (mutable, stored by reference) ────────────────
+
+// Object literal
+const person = { name: "Alice", age: 30 };
+
+// Array (a special object)
+const nums = [1, 2, 3];
+
+// Function (also an object in JS)
+function add(a, b) { return a + b; }
+
+// ── typeof operator ───────────────────────────────────────────
+console.log(typeof 42);          // "number"
+console.log(typeof "hello");     // "string"
+console.log(typeof true);        // "boolean"
+console.log(typeof undefined);   // "undefined"
+console.log(typeof null);        // "object"  ← historical bug!
+console.log(typeof {});          // "object"
+console.log(typeof []);          // "object"
+console.log(typeof function(){}); // "function"
+console.log(typeof 42n);         // "bigint"
+console.log(typeof Symbol());    // "symbol"</code></pre>
+    </div>
+    <div class="output">
+      undefined<br>
+      "number" &nbsp;"string" &nbsp;"boolean" &nbsp;"undefined"<br>
+      "object" &nbsp;"object" &nbsp;"object" &nbsp;"function"
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠️ typeof null === "object"</strong> — this is a known JavaScript bug from 1995 that was never fixed to preserve backward compatibility. Use <code>value === null</code> to check for null explicitly.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       06 — OPERATORS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="operators">
+    <div class="section-title">
+      <span class="section-number">06</span>
+      Operators
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">operators.js</div></div>
+      <pre><code class="language-javascript">// ── Arithmetic ────────────────────────────────────────────────
+console.log(10 + 3);  // 13   addition
+console.log(10 - 3);  // 7    subtraction
+console.log(10 * 3);  // 30   multiplication
+console.log(10 / 3);  // 3.333... division
+console.log(10 % 3);  // 1    modulo (remainder)
+console.log(10 ** 3); // 1000 exponentiation (ES7)
+console.log(++5);     // 6    prefix increment
+console.log(5--);     // 5    postfix decrement (returns THEN decrements)
+
+// ── Assignment ────────────────────────────────────────────────
+let n = 10;
+n += 5;   // n = n + 5  → 15
+n -= 3;   // n = n - 3  → 12
+n *= 2;   // n = n * 2  → 24
+n /= 4;   // n = n / 4  → 6
+n **= 2;  // n = n ** 2 → 36
+n %= 10;  // n = n % 10 → 6
+console.log(n); // 6
+
+// ── Comparison ────────────────────────────────────────────────
+console.log(5 == "5");   // true  — loose equality (type coerced)
+console.log(5 === "5");  // false — strict equality (no coercion)
+console.log(5 != "5");   // false
+console.log(5 !== "5");  // true  ← always prefer !== over !=
+console.log(10 > 5);     // true
+console.log(10 >= 10);   // true
+console.log(3 < 1);      // false
+
+// ── Logical ───────────────────────────────────────────────────
+console.log(true  && false); // false  (AND — both must be true)
+console.log(true  || false); // true   (OR  — at least one true)
+console.log(!true);          // false  (NOT)
+console.log(!false);         // true
+
+// Short-circuit evaluation
+let user = null;
+let name = user && user.name;    // null  — stops at falsy user
+let label = user || "Guest";     // "Guest" — uses fallback
+console.log(name, label);       // null  "Guest"
+
+// ── String concatenation ──────────────────────────────────────
+console.log("Hello" + " " + "World");   // "Hello World"
+console.log("Score: " + 100);           // "Score: 100"
+
+// ── Ternary operator ─────────────────────────────────────────
+let age = 20;
+let status = age >= 18 ? "Adult" : "Minor";
+console.log(status); // "Adult"</code></pre>
+    </div>
+    <div class="output">13 &nbsp;7 &nbsp;30 &nbsp;3.333 &nbsp;1 &nbsp;1000<br>6<br>true &nbsp;false &nbsp;true<br>null &nbsp;"Guest"<br>"Hello World"<br>"Adult"</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       07 — TYPE CONVERSION
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="typeconversion">
+    <div class="section-title">
+      <span class="section-number">07</span>
+      Type Conversion &amp; Coercion
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">conversion.js</div></div>
+      <pre><code class="language-javascript">// ── Explicit conversion (you control it) ──────────────────────
+
+// To Number
+console.log(Number("42"));       // 42
+console.log(Number("3.14"));     // 3.14
+console.log(Number(""));         // 0
+console.log(Number("abc"));      // NaN
+console.log(Number(true));       // 1
+console.log(Number(false));      // 0
+console.log(Number(null));       // 0
+console.log(Number(undefined));  // NaN
+console.log(parseInt("42px"));   // 42   — stops at non-digit
+console.log(parseFloat("3.14m"));// 3.14
+
+// To String
+console.log(String(42));         // "42"
+console.log(String(true));       // "true"
+console.log(String(null));       // "null"
+console.log((255).toString(16)); // "ff"  (hex)
+console.log((8).toString(2));    // "1000" (binary)
+
+// To Boolean
+console.log(Boolean(0));         // false  ← falsy
+console.log(Boolean(""));        // false  ← falsy
+console.log(Boolean(null));      // false  ← falsy
+console.log(Boolean(undefined)); // false  ← falsy
+console.log(Boolean(NaN));       // false  ← falsy
+console.log(Boolean(1));         // true
+console.log(Boolean("hello"));   // true
+console.log(Boolean([]));        // true  ← empty array is truthy!
+console.log(Boolean({}));        // true  ← empty object is truthy!
+
+// ── Implicit coercion (JS does it automatically) ───────────────
+console.log("5" - 2);     // 3    — string coerced to number
+console.log("5" + 2);     // "52" — number coerced to string
+console.log("5" * "3");   // 15   — both coerced to numbers
+console.log(true + 1);    // 2    — true → 1</code></pre>
+    </div>
+    <div class="output">42 &nbsp;3.14 &nbsp;0 &nbsp;NaN &nbsp;1 &nbsp;0<br>false &nbsp;false &nbsp;false &nbsp;true &nbsp;true<br>3 &nbsp;"52" &nbsp;15 &nbsp;2</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       08 — CONDITIONALS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="conditionals">
+    <div class="section-title">
+      <span class="section-number">08</span>
+      Conditionals — if / else if / else
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">conditionals.js</div></div>
+      <pre><code class="language-javascript">// ── Basic if / else ───────────────────────────────────────────
+let temperature = 35;
+
+if (temperature > 30) {
+  console.log("It is hot outside.");
+} else {
+  console.log("It is comfortable outside.");
+}
+
+// ── if / else if / else ───────────────────────────────────────
+let score = 78;
+
+if (score >= 90) {
+  console.log("Grade: A");
+} else if (score >= 80) {
+  console.log("Grade: B");
+} else if (score >= 70) {
+  console.log("Grade: C");
+} else if (score >= 60) {
+  console.log("Grade: D");
+} else {
+  console.log("Grade: F");
+}
+// Grade: C
+
+// ── Nested conditions ─────────────────────────────────────────
+let isLoggedIn = true;
+let isAdmin    = false;
+
+if (isLoggedIn) {
+  if (isAdmin) {
+    console.log("Admin dashboard");
+  } else {
+    console.log("User dashboard");
+  }
+} else {
+  console.log("Please log in");
+}
+
+// ── Ternary (short if/else) ───────────────────────────────────
+let age   = 20;
+let label = age >= 18 ? "Adult" : "Minor";
+console.log(label); // "Adult"
+
+// Chained ternary (keep readable)
+let grade =
+  score >= 90 ? "A" :
+  score >= 80 ? "B" :
+  score >= 70 ? "C" : "F";
+console.log(grade); // "C"</code></pre>
+    </div>
+    <div class="output">It is hot outside.<br>Grade: C<br>User dashboard<br>"Adult"<br>"C"</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       09 — SWITCH
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="switch">
+    <div class="section-title">
+      <span class="section-number">09</span>
+      Switch Statement
+    </div>
+
+    <p class="desc">Best for matching a single value against many possible cases. Uses strict (<code>===</code>) comparison.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">switch.js</div></div>
+      <pre><code class="language-javascript">let day = "Wednesday";
+
+switch (day) {
+  case "Monday":
+  case "Tuesday":
+  case "Wednesday":
+  case "Thursday":
+  case "Friday":
+    console.log("Weekday — class is on!");
+    break;                             // ← IMPORTANT: stops fall-through
+  case "Saturday":
+  case "Sunday":
+    console.log("Weekend — no class.");
+    break;
+  default:
+    console.log("Unknown day.");
+}
+// Weekday — class is on!
+
+// ── Number switch ─────────────────────────────────────────────
+let month = 4;
+let season;
+
+switch (month) {
+  case 12: case 1: case 2:
+    season = "Dry season (Harmattan)";
+    break;
+  case 3: case 4: case 5:
+    season = "Early rainy season";
+    break;
+  case 6: case 7: case 8:
+    season = "Mid rainy season";
+    break;
+  case 9: case 10: case 11:
+    season = "Late rainy season";
+    break;
+  default:
+    season = "Invalid month";
+}
+
+console.log(`Month ${month}: ${season}`);
+// Month 4: Early rainy season
+
+// ── Without break = fall-through (usually a bug) ─────────────
+let x = 1;
+switch (x) {
+  case 1:
+    console.log("one");   // runs
+    // no break — falls through!
+  case 2:
+    console.log("two");   // also runs
+    break;
+  case 3:
+    console.log("three");
+}
+// one
+// two</code></pre>
+    </div>
+    <div class="output">Weekday — class is on!<br>Month 4: Early rainy season<br>one<br>two</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       10 — LOOPS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="loops">
+    <div class="section-title">
+      <span class="section-number">10</span>
+      Loops
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">for loop — when you know the count</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">for-loop.js</div></div>
+        <pre><code class="language-javascript">// for (initializer; condition; increment) { body }
+
+for (let i = 0; i < 5; i++) {
+  console.log(`Iteration ${i}`);
+}
+// Iteration 0  1  2  3  4
+
+// Count down
+for (let i = 5; i >= 1; i--) {
+  process.stdout.write(i + " ");
+}
+// 5 4 3 2 1
+
+// Step by 2
+for (let i = 0; i <= 10; i += 2) {
+  process.stdout.write(i + " ");
+}
+// 0 2 4 6 8 10
+
+// Loop over an array with index
+const fruits = ["apple", "banana", "cherry"];
+
+for (let i = 0; i < fruits.length; i++) {
+  console.log(`${i}: ${fruits[i]}`);
+}
+// 0: apple   1: banana   2: cherry
+
+// Nested loops — multiplication table
+for (let row = 1; row <= 3; row++) {
+  for (let col = 1; col <= 3; col++) {
+    process.stdout.write(`${row * col}\t`);
+  }
+  console.log();
+}
+// 1  2  3
+// 2  4  6
+// 3  6  9</code></pre>
+      </div>
+      <div class="output">Iteration 0  Iteration 1  ... Iteration 4<br>5 4 3 2 1<br>0 2 4 6 8 10<br>0: apple &nbsp;1: banana &nbsp;2: cherry</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">while loop — repeat while a condition is true</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">while.js</div></div>
+        <pre><code class="language-javascript">// while (condition) { body }
+// Check condition BEFORE each iteration
+
+let count = 1;
+while (count <= 5) {
+  console.log(`Count: ${count}`);
+  count++;          // must update — or infinite loop!
+}
+// Count: 1  2  3  4  5
+
+// User input simulation
+let password = "";
+let attempts = 0;
+
+while (password !== "secret123" && attempts < 3) {
+  // Normally: password = prompt("Enter password:");
+  password = ["wrong", "wrong", "secret123"][attempts];
+  attempts++;
+  if (password !== "secret123") {
+    console.log(`Wrong password. Attempt ${attempts}`);
+  }
+}
+
+if (password === "secret123") {
+  console.log("Access granted!");
+} else {
+  console.log("Account locked.");
+}
+
+// While with unknown length
+let num = 256;
+let steps = 0;
+while (num > 1) {
+  num = Math.floor(num / 2);
+  steps++;
+}
+console.log(`Steps to reach 1: ${steps}`); // 8</code></pre>
+      </div>
+      <div class="output">Count: 1  2  3  4  5<br>Wrong password. Attempt 1<br>Wrong password. Attempt 2<br>Access granted!<br>Steps to reach 1: 8</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">do…while — executes at least once</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">do-while.js</div></div>
+        <pre><code class="language-javascript">// do { body } while (condition);
+// Body runs FIRST, condition checked AFTER
+
+let n = 1;
+do {
+  console.log(`n = ${n}`);
+  n++;
+} while (n <= 3);
+// n = 1  n = 2  n = 3
+
+// Difference from while: runs even when condition is false from start
+let x = 100;
+do {
+  console.log("This runs once even though x > 10");
+} while (x < 10);    // condition false, but body already ran</code></pre>
+      </div>
+      <div class="output">n = 1 &nbsp;n = 2 &nbsp;n = 3<br>This runs once even though x &gt; 10</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">for…of — iterate values <span class="badge es6">ES6</span></div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">for-of.js</div></div>
+        <pre><code class="language-javascript">// for (const item of iterable) — arrays, strings, Maps, Sets
+
+// Array
+const colors = ["red", "green", "blue"];
+for (const color of colors) {
+  console.log(color);
+}
+// red  green  blue
+
+// String
+for (const char of "Hello") {
+  process.stdout.write(char + "-");
+}
+// H-e-l-l-o-
+
+// With index — use entries()
+for (const [index, value] of colors.entries()) {
+  console.log(`${index}: ${value}`);
+}
+// 0: red   1: green   2: blue
+
+// Set
+const unique = new Set([1, 2, 2, 3, 3, 3]);
+for (const n of unique) {
+  process.stdout.write(n + " ");
+}
+// 1 2 3</code></pre>
+      </div>
+      <div class="output">red &nbsp;green &nbsp;blue<br>H-e-l-l-o-<br>0: red &nbsp;1: green &nbsp;2: blue<br>1 2 3</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">for…in — iterate object keys</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">for-in.js</div></div>
+        <pre><code class="language-javascript">// for (const key in object) — iterates enumerable property keys
+
+const student = {
+  name:  "Alice",
+  grade: "B+",
+  score: 85,
+  year:  2,
+};
+
+for (const key in student) {
+  console.log(`${key}: ${student[key]}`);
+}
+// name: Alice
+// grade: B+
+// score: 85
+// year: 2
+
+// Check own properties (excludes inherited)
+for (const key in student) {
+  if (Object.hasOwn(student, key)) {
+    console.log(key, "→", student[key]);
+  }
+}</code></pre>
+      </div>
+      <div class="output">name: Alice &nbsp;grade: B+ &nbsp;score: 85 &nbsp;year: 2</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       11 — BREAK & CONTINUE
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="break-continue">
+    <div class="section-title">
+      <span class="section-number">11</span>
+      break &amp; continue
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">break-continue.js</div></div>
+      <pre><code class="language-javascript">// ── break — exit the loop immediately ─────────────────────────
+console.log("--- break ---");
+for (let i = 0; i < 10; i++) {
+  if (i === 5) break;             // stop when i reaches 5
+  process.stdout.write(i + " "); // 0 1 2 3 4
+}
+
+// Find first match and stop
+const names = ["Bob", "Alice", "Carol", "Alice", "Dave"];
+for (const name of names) {
+  if (name === "Alice") {
+    console.log(`\nFound: ${name}`);
+    break;                        // no need to continue
+  }
+}
+
+// ── continue — skip current iteration ────────────────────────
+console.log("--- continue ---");
+for (let i = 0; i < 8; i++) {
+  if (i % 2 === 0) continue;     // skip even numbers
+  process.stdout.write(i + " "); // 1 3 5 7
+}
+
+// Skip specific values
+const grades = [85, null, 92, undefined, 78, null, 60];
+let total = 0;
+let count = 0;
+
+for (const g of grades) {
+  if (g == null) continue;       // skip null and undefined
+  total += g;
+  count++;
+}
+console.log(`\nAverage: ${(total / count).toFixed(1)}`); // 78.8</code></pre>
+    </div>
+    <div class="output">0 1 2 3 4<br>Found: Alice<br>1 3 5 7<br>Average: 78.8</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       12 — FUNCTIONS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="functions">
+    <div class="section-title">
+      <span class="section-number">12</span>
+      Functions
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Function Declaration</div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">functions.js</div></div>
+        <pre><code class="language-javascript">// function name(parameters) { body; return value; }
+// Hoisted — can be called before definition
+
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+console.log(greet("Alice"));   // "Hello, Alice!"
+
+// Multiple parameters, default values
+function createProfile(name, age = 18, role = "student") {
+  return { name, age, role };
+}
+console.log(createProfile("Bob"));           // { name:"Bob", age:18, role:"student" }
+console.log(createProfile("Carol", 22, "TA"));  // { name:"Carol", age:22, role:"TA" }
+
+// Multiple return points
+function classify(score) {
+  if (score >= 90) return "Distinction";
+  if (score >= 75) return "Merit";
+  if (score >= 50) return "Pass";
+  return "Fail";
+}
+console.log(classify(85));  // "Merit"
+console.log(classify(40));  // "Fail"
+
+// No return → returns undefined
+function sayHi() {
+  console.log("Hi!");
+}
+let result = sayHi();
+console.log(result); // undefined</code></pre>
+      </div>
+      <div class="output">"Hello, Alice!"<br>{ name:"Bob", age:18, role:"student" }<br>"Merit" &nbsp;"Fail"<br>Hi!<br>undefined</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Function Expression &amp; Arrow Functions <span class="badge es6">ES6</span></div>
+      <div class="code-window">
+        <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">arrow.js</div></div>
+        <pre><code class="language-javascript">// Function expression — assigned to a variable (NOT hoisted)
+const square = function(n) {
+  return n * n;
+};
+console.log(square(5)); // 25
+
+// ── Arrow function syntax ─────────────────────────────────────
+
+// Full form
+const add = (a, b) => {
+  return a + b;
+};
+
+// Concise body — implicit return (single expression)
+const multiply = (a, b) => a * b;
+
+// Single parameter — no parentheses needed
+const double = n => n * 2;
+
+// No parameters — parentheses required
+const getRandom = () => Math.random();
+
+// Return an object — wrap in parentheses
+const makePoint = (x, y) => ({ x, y });
+
+console.log(add(3, 4));       // 7
+console.log(multiply(3, 4));  // 12
+console.log(double(7));       // 14
+console.log(makePoint(2, 5)); // { x: 2, y: 5 }
+
+// ── IIFE — Immediately Invoked Function Expression ─────────────
+const result = (function() {
+  let secret = 42;
+  return secret * 2;
+})();
+console.log(result); // 84
+
+// ── Rest parameters — accept any number of args ───────────────
+function sumAll(...numbers) {
+  return numbers.reduce((acc, n) => acc + n, 0);
+}
+console.log(sumAll(1, 2, 3, 4, 5)); // 15</code></pre>
+      </div>
+      <div class="output">25<br>7 &nbsp;12 &nbsp;14 &nbsp;{ x:2, y:5 }<br>84<br>15</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       13 — SCOPE & HOISTING
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="scope">
+    <div class="section-title">
+      <span class="section-number">13</span>
+      Scope &amp; Hoisting
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">scope.js</div></div>
+      <pre><code class="language-javascript">// ── Scope ─────────────────────────────────────────────────────
+// Global scope — accessible everywhere
+let globalVar = "I am global";
+
+function outer() {
+  // Function scope
+  let outerVar = "I am in outer";
+
+  function inner() {
+    // Block scope (also function scope here)
+    let innerVar = "I am in inner";
+
+    // Inner can access all outer scopes (scope chain)
+    console.log(globalVar);   // ✅ accessible
+    console.log(outerVar);    // ✅ accessible
+    console.log(innerVar);    // ✅ accessible
+  }
+
+  inner();
+  // console.log(innerVar); // ❌ ReferenceError — not accessible here
+}
+outer();
+
+// Block scope with let/const
+{
+  let blockLet   = "block";
+  const blockConst = "also block";
+  var blockVar   = "function-scoped";
+}
+// console.log(blockLet);   // ❌ ReferenceError
+console.log(blockVar);       // ✅ "function-scoped" — var leaks!
+
+// ── Hoisting ──────────────────────────────────────────────────
+// var declarations are hoisted (initialised to undefined)
+console.log(x);     // undefined (not an error)
+var x = 5;
+console.log(x);     // 5
+
+// Function declarations are fully hoisted
+sayHello();         // ✅ works before definition
+function sayHello() {
+  console.log("Hello from hoisted function!");
+}
+
+// let/const are hoisted but in Temporal Dead Zone (TDZ)
+// console.log(y); // ❌ ReferenceError: Cannot access 'y' before init
+let y = 10;</code></pre>
+    </div>
+    <div class="output">I am global &nbsp;I am in outer &nbsp;I am in inner<br>"function-scoped"<br>undefined &nbsp;5<br>Hello from hoisted function!</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       14 — CLOSURES
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="closures">
+    <div class="section-title">
+      <span class="section-number">14</span>
+      Closures
+    </div>
+
+    <p class="desc">A closure is a function that <em>remembers</em> variables from its outer scope even after the outer function has returned.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">closures.js</div></div>
+      <pre><code class="language-javascript">// Basic closure
+function makeCounter() {
+  let count = 0;                  // private variable
+
+  return function() {
+    count++;                      // inner function closes over count
+    return count;
+  };
+}
+
+const counterA = makeCounter();
+const counterB = makeCounter();   // independent closure
+
+console.log(counterA()); // 1
+console.log(counterA()); // 2
+console.log(counterA()); // 3
+console.log(counterB()); // 1 — own separate count
+
+// Factory function using closure
+function makeMultiplier(factor) {
+  return n => n * factor;        // closes over factor
+}
+
+const double   = makeMultiplier(2);
+const triple   = makeMultiplier(3);
+const tenTimes = makeMultiplier(10);
+
+console.log(double(5));    // 10
+console.log(triple(5));    // 15
+console.log(tenTimes(7));  // 70
+
+// Private data via closure (module pattern)
+function createBankAccount(initialBalance) {
+  let balance = initialBalance;   // private
+
+  return {
+    deposit:  amount => { balance += amount; return balance; },
+    withdraw: amount => {
+      if (amount > balance) return "Insufficient funds";
+      balance -= amount;
+      return balance;
+    },
+    getBalance: () => balance,
+  };
+}
+
+const account = createBankAccount(1000);
+console.log(account.deposit(500));    // 1500
+console.log(account.withdraw(200));   // 1300
+console.log(account.getBalance());    // 1300
+// balance is inaccessible from outside</code></pre>
+    </div>
+    <div class="output">1 &nbsp;2 &nbsp;3 &nbsp;1<br>10 &nbsp;15 &nbsp;70<br>1500 &nbsp;1300 &nbsp;1300</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       15 — HIGHER-ORDER FUNCTIONS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="higher-order">
+    <div class="section-title">
+      <span class="section-number">15</span>
+      Higher-Order Functions
+    </div>
+
+    <p class="desc">A higher-order function <strong>takes a function as argument</strong> or <strong>returns a function</strong> (or both). This is a cornerstone of functional programming in JS.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">higher-order.js</div></div>
+      <pre><code class="language-javascript">// ── Functions as arguments (callbacks) ────────────────────────
+function applyTwice(fn, value) {
+  return fn(fn(value));
+}
+
+const double = n => n * 2;
+console.log(applyTwice(double, 3));   // 12  (3→6→12)
+
+// Custom forEach
+function myForEach(array, callback) {
+  for (let i = 0; i < array.length; i++) {
+    callback(array[i], i);
+  }
+}
+
+myForEach(["a", "b", "c"], (item, i) => {
+  console.log(`${i}: ${item}`);
+});
+
+// ── Functions returning functions ─────────────────────────────
+function makeAdder(x) {
+  return y => x + y;    // returns a new function
+}
+
+const add5  = makeAdder(5);
+const add10 = makeAdder(10);
+
+console.log(add5(3));   // 8
+console.log(add10(3));  // 13
+
+// Function composition
+const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
+
+const process = pipe(
+  n => n * 2,           // step 1: double
+  n => n + 10,          // step 2: add 10
+  n => `Result: ${n}`,  // step 3: format
+);
+
+console.log(process(5)); // "Result: 20"</code></pre>
+    </div>
+    <div class="output">12<br>0: a &nbsp;1: b &nbsp;2: c<br>8 &nbsp;13<br>"Result: 20"</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       16 — setTimeout
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="timers">
+    <div class="section-title">
+      <span class="section-number">16</span>
+      setTimeout — run code after a delay
+    </div>
+
+    <p class="desc"><code>setTimeout(callback, delay)</code> schedules a function to run <strong>once</strong> after <code>delay</code> milliseconds.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">setTimeout.js</div></div>
+      <pre><code class="language-javascript">// Basic usage
+console.log("1. Start");
+
+setTimeout(function() {
+  console.log("3. Runs after 2 seconds");
+}, 2000);            // 2000 ms = 2 seconds
+
+console.log("2. This runs immediately (before timeout fires)");
+
+// Arrow function syntax
+setTimeout(() => {
+  console.log("Delayed message with arrow function");
+}, 1000);
+
+// Pass arguments to the callback
+setTimeout((name, score) => {
+  console.log(`${name} scored ${score}`);
+}, 500, "Alice", 95);   // extra args after delay
+
+// Cancel a timeout
+const timerId = setTimeout(() => {
+  console.log("This will NOT print");
+}, 3000);
+
+clearTimeout(timerId);   // cancelled before it fires
+
+// setTimeout with 0ms — deferred to next event loop tick
+console.log("A");
+setTimeout(() => console.log("C (deferred)"), 0);
+console.log("B");
+// Prints: A  B  C
+// Even 0ms delay runs AFTER synchronous code finishes</code></pre>
+    </div>
+    <div class="output">1. Start<br>2. This runs immediately...<br>Alice scored 95 &nbsp;<span class="out-comment">// (~500ms later)</span><br>Delayed message... &nbsp;<span class="out-comment">// (~1s)</span><br>3. Runs after 2 seconds &nbsp;<span class="out-comment">// (~2s)</span><br>A<br>B<br>C (deferred)</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       17 — setInterval
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="intervals">
+    <div class="section-title">
+      <span class="section-number">17</span>
+      setInterval — repeat code on a schedule
+    </div>
+
+    <p class="desc"><code>setInterval(callback, interval)</code> calls the function <strong>repeatedly</strong> every <code>interval</code> milliseconds until cleared.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">setInterval.js</div></div>
+      <pre><code class="language-javascript">// Basic interval
+let tick = 0;
+
+const intervalId = setInterval(() => {
+  tick++;
+  console.log(`Tick #${tick}`);
+
+  if (tick === 5) {
+    clearInterval(intervalId);   // stop after 5 ticks
+    console.log("Interval stopped.");
+  }
+}, 1000);
+
+// Tick #1  (after 1s)
+// Tick #2  (after 2s)
+// ...
+// Tick #5  (after 5s)
+// Interval stopped.
+
+
+// ── Countdown timer ───────────────────────────────────────────
+function startCountdown(seconds) {
+  let remaining = seconds;
+
+  const timer = setInterval(() => {
+    console.log(`Time left: ${remaining}s`);
+    remaining--;
+
+    if (remaining < 0) {
+      clearInterval(timer);
+      console.log("Time's up!");
+    }
+  }, 1000);
+}
+
+startCountdown(3);
+// Time left: 3s
+// Time left: 2s
+// Time left: 1s
+// Time left: 0s
+// Time's up!
+
+
+// ── Clock (browser) ──────────────────────────────────────────
+// In a browser, update a DOM element every second:
+//
+// function startClock() {
+//   const clockEl = document.getElementById("clock");
+//
+//   setInterval(() => {
+//     const now = new Date();
+//     clockEl.textContent = now.toLocaleTimeString();
+//   }, 1000);
+// }
+
+
+// ── setInterval vs repeated setTimeout ───────────────────────
+// setInterval fires every N ms regardless of callback duration.
+// Nested setTimeout fires N ms AFTER the callback completes — safer.
+
+function pollServer() {
+  fetch("/api/status")
+    .then(r => r.json())
+    .then(data => {
+      console.log("Status:", data.status);
+      setTimeout(pollServer, 5000); // next poll 5s after response
+    });
+}
+// pollServer(); // start polling</code></pre>
+    </div>
+    <div class="output">Tick #1 &nbsp;Tick #2 ... Tick #5<br>Interval stopped.<br>Time left: 3s &nbsp;2s &nbsp;1s &nbsp;0s<br>Time's up!</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       18 — ARRAYS BASICS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="arrays">
+    <div class="section-title">
+      <span class="section-number">18</span>
+      Arrays — Basics
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">arrays.js</div></div>
+      <pre><code class="language-javascript">// ── Creating arrays ───────────────────────────────────────────
+const fruits  = ["apple", "banana", "cherry"];
+const numbers = [10, 20, 30, 40, 50];
+const mixed   = ["text", 42, true, null, { id: 1 }];
+
+// From iterable
+const letters = Array.from("hello");             // ['h','e','l','l','o']
+const range   = Array.from({length:5}, (_,i) => i+1); // [1,2,3,4,5]
+const zeros   = Array(4).fill(0);               // [0,0,0,0]
+
+// ── Accessing elements ────────────────────────────────────────
+console.log(fruits[0]);        // "apple"
+console.log(fruits[2]);        // "cherry"
+console.log(fruits.at(-1));    // "cherry"  (last element, ES2022)
+console.log(fruits.length);    // 3
+
+// ── Modifying elements ────────────────────────────────────────
+fruits[1] = "blueberry";
+console.log(fruits);  // ["apple", "blueberry", "cherry"]
+
+// ── push / pop (end of array) ─────────────────────────────────
+const stack = ["a", "b", "c"];
+stack.push("d");          // adds to end → ["a","b","c","d"]
+const last = stack.pop(); // removes from end → "d"
+console.log(stack, last); // ["a","b","c"]  "d"
+
+// ── shift / unshift (front of array) ─────────────────────────
+const queue = ["task1", "task2"];
+queue.unshift("task0");     // adds to front → ["task0","task1","task2"]
+const first = queue.shift();// removes from front → "task0"
+console.log(queue, first);  // ["task1","task2"]  "task0"
+
+// ── splice — insert/remove anywhere ──────────────────────────
+const colors = ["red", "green", "blue", "yellow"];
+colors.splice(1, 1, "orange"); // at index 1, remove 1, insert "orange"
+console.log(colors); // ["red","orange","blue","yellow"]
+
+// ── slice — copy a portion (non-mutating) ─────────────────────
+const nums = [10, 20, 30, 40, 50];
+console.log(nums.slice(1, 4)); // [20, 30, 40]
+console.log(nums.slice(-2));   // [40, 50]
+console.log(nums);             // unchanged</code></pre>
+    </div>
+    <div class="output">"apple" &nbsp;"cherry" &nbsp;3<br>["apple", "blueberry", "cherry"]<br>["a","b","c"] &nbsp;"d"<br>["task1","task2"] &nbsp;"task0"<br>["red","orange","blue","yellow"]<br>[20,30,40] &nbsp;[40,50]</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       19 — ARRAY METHODS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="array-methods">
+    <div class="section-title">
+      <span class="section-number">19</span>
+      Array Methods — Search &amp; Sort
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">array-methods.js</div></div>
+      <pre><code class="language-javascript">const nums = [3, 1, 4, 1, 5, 9, 2, 6, 5];
+
+// ── sort ──────────────────────────────────────────────────────
+// Default sort converts to strings — WRONG for numbers!
+console.log([10,9,2,21,3].sort()); // [10,2,21,3,9] ← WRONG
+
+// Correct numeric sort
+const sorted = [...nums].sort((a, b) => a - b);
+console.log(sorted); // [1,1,2,3,4,5,5,6,9]
+
+// Sort objects by property
+const students = [
+  { name: "Yara",  gpa: 3.8 },
+  { name: "Alice", gpa: 3.9 },
+  { name: "Bob",   gpa: 3.5 },
+];
+students.sort((a, b) => b.gpa - a.gpa);  // highest GPA first
+students.forEach(s => console.log(`${s.name}: ${s.gpa}`));
+// Alice: 3.9   Yara: 3.8   Bob: 3.5
+
+// ── indexOf / lastIndexOf ─────────────────────────────────────
+console.log(nums.indexOf(5));       // 4   (first  occurrence)
+console.log(nums.lastIndexOf(5));   // 8   (last   occurrence)
+console.log(nums.indexOf(99));      // -1  (not found)
+
+// ── includes ─────────────────────────────────────────────────
+console.log(nums.includes(9));    // true
+console.log(nums.includes(99));   // false
+
+// ── find / findIndex ─────────────────────────────────────────
+const first = nums.find(n => n > 4);
+const idx   = nums.findIndex(n => n > 4);
+console.log(first, idx);   // 5  4
+
+// ── some / every ─────────────────────────────────────────────
+console.log(nums.some(n => n > 8));    // true  — at least one > 8
+console.log(nums.every(n => n > 0));   // true  — all > 0
+console.log(nums.every(n => n > 5));   // false
+
+// ── join / concat / reverse ───────────────────────────────────
+const words = ["Hello", "World", "JS"];
+console.log(words.join(" — "));         // "Hello — World — JS"
+console.log(words.join(""));            // "HelloWorldJS"
+
+const a = [1, 2, 3];
+const b = [4, 5, 6];
+console.log(a.concat(b, [7, 8]));       // [1,2,3,4,5,6,7,8]
+console.log([...a, ...b]);              // same result (spread)
+
+console.log([1, 2, 3, 4].reverse());   // [4,3,2,1]  (mutates!)</code></pre>
+    </div>
+    <div class="output">[10,2,21,3,9] &nbsp;<span class="out-comment">← wrong</span><br>[1,1,2,3,4,5,5,6,9]<br>Alice:3.9 &nbsp;Yara:3.8 &nbsp;Bob:3.5<br>4 &nbsp;8 &nbsp;-1 &nbsp;true &nbsp;false<br>5 &nbsp;4 &nbsp;true &nbsp;true &nbsp;false<br>"Hello — World — JS"<br>[1,2,3,4,5,6,7,8]</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       20 — MAP / FILTER / REDUCE
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="array-hof">
+    <div class="section-title">
+      <span class="section-number">20</span>
+      map · filter · reduce — Functional Array Methods
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">map-filter-reduce.js</div></div>
+      <pre><code class="language-javascript">const products = [
+  { name: "Laptop", price: 1200, inStock: true  },
+  { name: "Mouse",  price:   25, inStock: false },
+  { name: "Desk",   price:  350, inStock: true  },
+  { name: "Chair",  price:  200, inStock: true  },
+  { name: "Webcam", price:   80, inStock: false },
+];
+
+// ── map — transform every element (same length) ──────────────
+const names = products.map(p => p.name);
+console.log(names); // ['Laptop','Mouse','Desk','Chair','Webcam']
+
+const withTax = products.map(p => ({
+  ...p,
+  priceWithTax: +(p.price * 1.1925).toFixed(2),  // 19.25% VAT
+}));
+console.log(withTax[0].priceWithTax); // 1431.00
+
+// ── filter — keep matching elements ─────────────────────────
+const inStock  = products.filter(p => p.inStock);
+const cheap    = products.filter(p => p.price < 300);
+const goodBuy  = products.filter(p => p.inStock && p.price < 400);
+
+console.log(inStock.map(p => p.name));  // ['Laptop','Desk','Chair']
+console.log(goodBuy.map(p => p.name));  // ['Desk','Chair']
+
+// ── reduce — fold to a single value ──────────────────────────
+const totalValue = products
+  .filter(p => p.inStock)
+  .reduce((sum, p) => sum + p.price, 0);
+
+console.log(`Total stock value: $${totalValue}`); // $1750
+
+// Build an object (frequency count)
+const scores = [85, 92, 85, 78, 92, 85, 70];
+const freq = scores.reduce((acc, s) => {
+  acc[s] = (acc[s] || 0) + 1;
+  return acc;
+}, {});
+console.log(freq); // { 85:3, 92:2, 78:1, 70:1 }
+
+// ── Chaining ─────────────────────────────────────────────────
+const result = products
+  .filter(p => p.inStock)          // keep in-stock
+  .map(p => p.price)               // extract prices
+  .reduce((max, p) => p > max ? p : max, 0); // find max
+
+console.log(`Most expensive in-stock: $${result}`); // $1200</code></pre>
+    </div>
+    <div class="output">['Laptop','Mouse','Desk','Chair','Webcam']<br>['Laptop','Desk','Chair'] &nbsp;['Desk','Chair']<br>Total stock value: $1750<br>{ 85:3, 92:2, 78:1, 70:1 }<br>Most expensive in-stock: $1200</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       21 — OBJECTS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="objects">
+    <div class="section-title">
+      <span class="section-number">21</span>
+      Objects
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">objects.js</div></div>
+      <pre><code class="language-javascript">// ── Object literal ────────────────────────────────────────────
+const student = {
+  name:    "Alice",
+  age:     22,
+  faculty: "COLTECH",
+  grades:  [85, 92, 78],
+
+  // Method — function as property
+  average() {
+    const sum = this.grades.reduce((a, b) => a + b, 0);
+    return (sum / this.grades.length).toFixed(1);
+  },
+
+  // Computed property
+  get info() {
+    return `${this.name}, ${this.age} — ${this.faculty}`;
+  },
+};
+
+// Dot notation (preferred)
+console.log(student.name);       // "Alice"
+console.log(student.average());  // "85.0"
+console.log(student.info);       // "Alice, 22 — COLTECH"
+
+// Bracket notation (use when key has spaces or is dynamic)
+console.log(student["faculty"]); // "COLTECH"
+const key = "age";
+console.log(student[key]);       // 22
+
+// ── Add / update / delete properties ─────────────────────────
+student.email = "alice@uba.cm";  // add
+student.age   = 23;              // update
+delete student.faculty;          // delete
+console.log(student.faculty);    // undefined
+
+// ── Useful Object methods ─────────────────────────────────────
+const car = { make: "Toyota", model: "Corolla", year: 2022 };
+
+console.log(Object.keys(car));    // ["make","model","year"]
+console.log(Object.values(car));  // ["Toyota","Corolla",2022]
+console.log(Object.entries(car)); // [["make","Toyota"],...]
+
+// Destructure in loop
+for (const [key, value] of Object.entries(car)) {
+  console.log(`${key}: ${value}`);
+}
+
+// Merge objects
+const defaults = { theme: "dark", lang: "en", fontSize: 14 };
+const userPrefs = { lang: "fr", fontSize: 16 };
+const config = { ...defaults, ...userPrefs };  // spread merge
+console.log(config); // { theme:"dark", lang:"fr", fontSize:16 }</code></pre>
+    </div>
+    <div class="output">"Alice" &nbsp;"85.0" &nbsp;"Alice, 22 — COLTECH"<br>22 &nbsp;undefined<br>["make","model","year"]<br>make: Toyota &nbsp;model: Corolla &nbsp;year: 2022<br>{ theme:"dark", lang:"fr", fontSize:16 }</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       22 — STRING METHODS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="strings">
+    <div class="section-title">
+      <span class="section-number">22</span>
+      String Methods
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">strings.js</div></div>
+      <pre><code class="language-javascript">const str = "  Hello, JavaScript World!  ";
+
+// ── Case ──────────────────────────────────────────────────────
+console.log(str.toUpperCase()); // "  HELLO, JAVASCRIPT WORLD!  "
+console.log(str.toLowerCase()); // "  hello, javascript world!  "
+
+// ── Trim ──────────────────────────────────────────────────────
+console.log(str.trim());       // "Hello, JavaScript World!"
+console.log(str.trimStart());  // "Hello, JavaScript World!  "
+console.log(str.trimEnd());    // "  Hello, JavaScript World!"
+
+const clean = str.trim();
+
+// ── Search ────────────────────────────────────────────────────
+console.log(clean.includes("JavaScript")); // true
+console.log(clean.startsWith("Hello"));    // true
+console.log(clean.endsWith("!"));          // true
+console.log(clean.indexOf("World"));       // 18
+console.log(clean.indexOf("Python"));      // -1
+
+// ── Extract ───────────────────────────────────────────────────
+console.log(clean.slice(7, 17));    // "JavaScript"
+console.log(clean.slice(-6));       // "World!"
+console.log(clean.substring(7, 17));// "JavaScript"
+console.log(clean.charAt(0));       // "H"
+console.log(clean[0]);              // "H"
+console.log(clean.length);          // 24
+
+// ── Replace ───────────────────────────────────────────────────
+console.log(clean.replace("World", "Cameroon")); // replaces first
+const repeated = "cat cat cat";
+console.log(repeated.replaceAll("cat", "dog")); // "dog dog dog"
+
+// ── Split / Join ──────────────────────────────────────────────
+const csv = "Alice,Bob,Carol,Dave";
+const names = csv.split(",");
+console.log(names);          // ["Alice","Bob","Carol","Dave"]
+console.log(names.join(" | ")); // "Alice | Bob | Carol | Dave"
+
+// ── Pad / Repeat ─────────────────────────────────────────────
+console.log("5".padStart(3, "0")); // "005"  — useful for formatting
+console.log("ha".repeat(3));       // "hahaha"
+
+// ── Template literal (recap) ─────────────────────────────────
+const name  = "Alice";
+const score = 92;
+console.log(`${name} scored ${score} — ${score>=90?"Pass":"Fail"}`);</code></pre>
+    </div>
+    <div class="output">true &nbsp;true &nbsp;true &nbsp;18 &nbsp;-1<br>"JavaScript" &nbsp;"World!"<br>["Alice","Bob","Carol","Dave"]<br>"Alice | Bob | Carol | Dave"<br>"005" &nbsp;"hahaha"<br>Alice scored 92 — Pass</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       23 — DESTRUCTURING
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="destructuring">
+    <div class="section-title">
+      <span class="section-number">23</span>
+      Destructuring <span class="badge es6">ES6</span>
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">destructuring.js</div></div>
+      <pre><code class="language-javascript">// ── Array destructuring ───────────────────────────────────────
+const [a, b, c] = [10, 20, 30];
+console.log(a, b, c);       // 10 20 30
+
+// Skip elements with commas
+const [first, , third] = ["red", "green", "blue"];
+console.log(first, third);  // "red" "blue"
+
+// Default values
+const [x = 0, y = 0, z = 99] = [1, 2];
+console.log(x, y, z);       // 1 2 99
+
+// Swap two variables
+let p = 1, q = 2;
+[p, q] = [q, p];
+console.log(p, q);          // 2 1
+
+// Rest in destructuring
+const [head, ...tail] = [1, 2, 3, 4, 5];
+console.log(head, tail);    // 1  [2,3,4,5]
+
+// ── Object destructuring ──────────────────────────────────────
+const student = {
+  name: "Alice",
+  age:  22,
+  faculty: "COLTECH",
+  grades: [85, 92, 78],
+};
+
+const { name, age } = student;
+console.log(name, age);     // "Alice" 22
+
+// Rename on extraction
+const { name: studentName, faculty: dept } = student;
+console.log(studentName, dept); // "Alice" "COLTECH"
+
+// Default value if missing
+const { role = "student" } = student;
+console.log(role); // "student"
+
+// Nested destructuring
+const { grades: [g1, g2] } = student;
+console.log(g1, g2); // 85 92
+
+// In function parameters
+function display({ name, age, role = "student" }) {
+  console.log(`${name}, ${age} [${role}]`);
+}
+display(student); // "Alice, 22 [student]"</code></pre>
+    </div>
+    <div class="output">10 20 30 &nbsp;"red" "blue" &nbsp;1 2 99<br>2 1 &nbsp;1 [2,3,4,5]<br>"Alice" 22 &nbsp;"Alice" "COLTECH" &nbsp;"student"<br>85 92 &nbsp;"Alice, 22 [student]"</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       24 — SPREAD & REST
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="spread">
+    <div class="section-title">
+      <span class="section-number">24</span>
+      Spread &amp; Rest Operator <span class="badge es6">ES6</span>
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">spread-rest.js</div></div>
+      <pre><code class="language-javascript">// ── SPREAD (...) — expands an iterable ───────────────────────
+
+// Clone an array (shallow)
+const original = [1, 2, 3];
+const clone = [...original];
+
+// Merge arrays
+const a = [1, 2, 3];
+const b = [4, 5, 6];
+const merged = [...a, ...b, 7, 8];
+console.log(merged); // [1,2,3,4,5,6,7,8]
+
+// Spread into function
+const nums = [5, 1, 8, 3];
+console.log(Math.max(...nums)); // 8
+console.log(Math.min(...nums)); // 1
+
+// Spread with objects (shallow merge — later keys win)
+const defaults = { theme: "dark", lang: "en" };
+const overrides = { lang: "fr", debug: true };
+const config = { ...defaults, ...overrides };
+console.log(config); // { theme:"dark", lang:"fr", debug:true }
+
+// Immutable update pattern
+const user = { name: "Alice", age: 30 };
+const updatedUser = { ...user, age: 31 }; // new object
+console.log(updatedUser); // { name:"Alice", age:31 }
+console.log(user.age);    // 30 — original unchanged
+
+// ── REST (...) — collect remaining arguments ──────────────────
+
+function sum(first, second, ...rest) {
+  console.log("first:", first, "second:", second, "rest:", rest);
+  return first + second + rest.reduce((a, b) => a + b, 0);
+}
+
+console.log(sum(1, 2, 3, 4, 5)); // first:1 second:2 rest:[3,4,5] → 15
+
+// Variadic function — all args
+const sumAll = (...nums) => nums.reduce((a, b) => a + b, 0);
+console.log(sumAll(10, 20, 30, 40)); // 100</code></pre>
+    </div>
+    <div class="output">[1,2,3,4,5,6,7,8] &nbsp;8 &nbsp;1<br>{ theme:"dark", lang:"fr", debug:true }<br>{ name:"Alice", age:31 } &nbsp;30<br>first:1 second:2 rest:[3,4,5]<br>15 &nbsp;100</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       25 — TEMPLATE LITERALS
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="template">
+    <div class="section-title">
+      <span class="section-number">25</span>
+      Template Literals <span class="badge es6">ES6</span>
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">template.js</div></div>
+      <pre><code class="language-javascript">const name  = "Alice";
+const score = 92;
+const year  = new Date().getFullYear();
+
+// Basic interpolation
+console.log(`Hello, ${name}! Year: ${year}`);
+
+// Expressions inside ${}
+console.log(`Grade: ${score >= 90 ? "A" : "B"}`);
+console.log(`Sum: ${3 + 4 * 2}`);
+console.log(`Upper: ${name.toUpperCase()}`);
+
+// Multi-line strings (no \n needed)
+const card = `
+┌─────────────────────────┐
+│  Student: ${name.padEnd(14)}│
+│  Score:   ${String(score).padEnd(14)}│
+│  Result:  ${"Pass".padEnd(14)}│
+└─────────────────────────┘
+`;
+console.log(card);
+
+// Build HTML dynamically
+const items = ["Algorithms", "Data Structures", "Databases"];
+
+const listHTML = `
+<ul>
+  ${items.map((item, i) => `<li>${i + 1}. ${item}</li>`).join("\n  ")}
+</ul>
+`;
+console.log(listHTML);
+
+// Tagged template — custom string processing
+function bold(strings, ...values) {
+  return strings.reduce((result, str, i) => {
+    return result + str + (values[i] !== undefined
+      ? `**${values[i]}**`
+      : "");
+  }, "");
+}
+
+console.log(bold`Hello ${name}, you scored ${score} out of 100.`);
+// Hello **Alice**, you scored **92** out of 100.</code></pre>
+    </div>
+    <div class="output">Hello, Alice! Year: 2026<br>Grade: A &nbsp;Sum: 11 &nbsp;Upper: ALICE<br>[student card diagram]<br>Hello **Alice**, you scored **92** out of 100.</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       26 — CLASSES
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="classes">
+    <div class="section-title">
+      <span class="section-number">26</span>
+      Classes <span class="badge es6">ES6</span>
+    </div>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">classes.js</div></div>
+      <pre><code class="language-javascript">class Student {
+  // Private field (ES2022)
+  #gpa;
+
+  constructor(name, faculty, gpa) {
+    this.name    = name;
+    this.faculty = faculty;
+    this.#gpa    = gpa;
+    this.courses = [];
+  }
+
+  // Method
+  enroll(course) {
+    this.courses.push(course);
+    return this;              // return this for chaining
+  }
+
+  // Getter
+  get info() {
+    return `${this.name} | ${this.faculty} | GPA: ${this.#gpa}`;
+  }
+
+  // Setter
+  set gpa(value) {
+    if (value < 0 || value > 4) throw new Error("Invalid GPA");
+    this.#gpa = value;
+  }
+
+  // Static method — called on the class, not an instance
+  static compare(a, b) {
+    return b.#gpa - a.#gpa;  // sort descending
+  }
+
+  toString() {
+    return this.info;
+  }
+}
+
+// ── Inheritance ────────────────────────────────────────────────
+class GradStudent extends Student {
+  constructor(name, gpa, thesis) {
+    super(name, "Graduate School", gpa);  // call parent constructor
+    this.thesis = thesis;
+  }
+
+  // Override
+  get info() {
+    return `${super.info} | Thesis: "${this.thesis}"`;
+  }
+}
+
+// Usage
+const alice = new Student("Alice", "COLTECH", 3.8);
+alice.enroll("Algorithms").enroll("Networks");
+
+const bob   = new GradStudent("Bob", 3.9, "ML in Healthcare");
+
+console.log(alice.info);
+// Alice | COLTECH | GPA: 3.8
+
+console.log(bob.info);
+// Bob | Graduate School | GPA: 3.9 | Thesis: "ML in Healthcare"
+
+console.log(alice.courses);   // ["Algorithms", "Networks"]
+console.log(bob instanceof Student);  // true
+
+const cohort = [alice, bob];
+cohort.sort(Student.compare);
+cohort.forEach(s => console.log(s.toString()));</code></pre>
+    </div>
+    <div class="output">Alice | COLTECH | GPA: 3.8<br>Bob | Graduate School | GPA: 3.9 | Thesis: "ML in Healthcare"<br>["Algorithms", "Networks"] &nbsp;true</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       27 — PROMISES & ASYNC/AWAIT
+       ══════════════════════════════════════════════════════════ -->
+  <div class="section" id="promises">
+    <div class="section-title">
+      <span class="section-number">27</span>
+      Promises &amp; Async/Await <span class="badge es6">ES6/ES8</span>
+    </div>
+
+    <p class="desc">JavaScript is single-threaded. Async operations (API calls, timers, file I/O) are handled via the event loop. Promises and <code>async/await</code> provide clean syntax for async code.</p>
+
+    <div class="code-window">
+      <div class="code-titlebar"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div><div class="file-tab">async.js</div></div>
+      <pre><code class="language-javascript">// ── Promise basics ────────────────────────────────────────────
+// States: pending → fulfilled | rejected
+
+function fetchGrade(studentId) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (studentId > 0) {
+        resolve({ id: studentId, name: "Alice", grade: 92 });
+      } else {
+        reject(new Error("Invalid student ID"));
+      }
+    }, 500);
+  });
+}
+
+// .then() / .catch() / .finally()
+fetchGrade(1)
+  .then(data => {
+    console.log(`Student: ${data.name}, Grade: ${data.grade}`);
+    return data.grade;
+  })
+  .then(grade => console.log(`Passed: ${grade >= 50}`))
+  .catch(err  => console.error("Error:", err.message))
+  .finally(()  => console.log("Request finished"));
+
+// Promise combinators
+Promise.all([fetchGrade(1), fetchGrade(2), fetchGrade(3)])
+  .then(results => results.map(r => `${r.name}:${r.grade}`))
+  .then(list    => console.log(list));
+
+// ── async / await ─────────────────────────────────────────────
+async function loadReport(id) {
+  try {
+    const student = await fetchGrade(id);
+    console.log(`Loaded: ${student.name}`);
+
+    // Parallel fetch
+    const [s1, s2] = await Promise.all([fetchGrade(2), fetchGrade(3)]);
+    console.log(`Also loaded: ${s1.name}, ${s2.name}`);
+
+    return {
+      main: student,
+      others: [s1, s2],
+    };
+  } catch (err) {
+    console.error("Failed:", err.message);
+    return null;
+  }
+}
+
+loadReport(1)
+  .then(report => report && console.log("Report ready"));</code></pre>
+    </div>
+    <div class="output">Student: Alice, Grade: 92<br>Passed: true<br>Request finished<br>["Alice:92","Alice:92","Alice:92"]<br>Loaded: Alice<br>Also loaded: Alice, Alice<br>Report ready</div>
+  </div>
+
+</main>
+</div><!-- /shell -->
+
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<footer>
+  <div>
+    <strong>JavaScript Fundamentals — Complete Reference Guide</strong><br>
+    Statements · Variables · Loops · Functions · Timers · Arrays · ES6+
+  </div>
+  <div style="text-align:right; line-height:1.6;">
+    <strong>TCHAPGA TCHITO C.</strong><br>
+    University of Buea · College of Technology<br>
+    Academic Year 2025 / 2026
+  </div>
+</footer>
+
+</body>
+</html>
